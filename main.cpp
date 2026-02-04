@@ -2,7 +2,9 @@
 #include <iostream>
 #include "morfeusz2.h"
 
-
+std::set<std::string> detectUnknownWords(morfeusz::Morfeusz *m, std::string text) {
+    // TODO
+} 
 
 
 int main() {
