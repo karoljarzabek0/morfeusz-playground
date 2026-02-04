@@ -1,5 +1,9 @@
+#include <format>
 #include <iostream>
 #include "morfeusz2.h"
+
+
+
 
 int main() {
     std::cout << "Hello, Linux!" << std::endl;
@@ -11,6 +15,8 @@ int main() {
     m->analyse("Załóż gąbkę na klawesyn.", r);
 
     for (const auto &i : r) {
-        std::cout << i.orth << std::endl;
+        std::cout << "----------------" << std::endl;
+        std::cout << i.orth << " -> ";
+        std::cout << i.lemma << std::endl;
     }
 }
