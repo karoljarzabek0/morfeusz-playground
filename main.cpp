@@ -1,9 +1,27 @@
-#include <format>
 #include <iostream>
+#include <fstream>
 #include "morfeusz2.h"
 
+
+std::string readFile(std::string filePath) {
+
+    std::string finalContent = ""; 
+    std::ifstream myFile(filePath);
+    if (myFile.is_open()) {
+        std::string line;
+        while (std::getline(myFile, line)) {
+            finalContent += line + "\n"; 
+        }
+        myFile.close();
+        
+    } else {
+        std::cout << "Error: Could not open the file.\n";
+    }
+
+    return finalContent;
+}
+
 std::set<std::string> detectUnknownWords(morfeusz::Morfeusz *m, std::string text) {
-    // TODO
     std::set<std::string> unknownWords;
 
     std::vector<morfeusz::MorphInterpretation> r;
@@ -33,12 +51,16 @@ int main() {
 
     morfeusz::Morfeusz *m = morfeusz::Morfeusz::createInstance();
     m->setCharset(morfeusz::UTF8);
+    m->setCaseHandling(morfeusz::IGNORE_CASE);
+    m->setAggl("permissive");
 
-    auto results = detectUnknownWords(m, "Dane niekliniczne, uzyskane na podstawie konwencjonalnych badań farmakologicznych dotyczących bezpieczeństwa stosowania, toksyczności po podaniu wielokrotnym, genotoksyczności i");
+    auto testText = readFile("test.txt");
+
+    auto results = detectUnknownWords(m, testText);
     
     for (const auto &i : results) {
         std::cout << i << " ";
-        std::cout << std::endl;
+        //std::cout << std::endl;
     }
 
 }
