@@ -66,8 +66,12 @@ void printResults(morfeusz::Morfeusz *m, std::string text) {
 
     for (const auto &i : r) {
         std::cout << "----------------" << std::endl;
-        std::cout << i.orth << " -> ";
-        std::cout << i.lemma << std::endl;
+        std::cout << i.orth 
+            << " -> "
+            << i.lemma << ", "
+            << "Tag: " << i.getTag(*m) << ", "
+            << "Name: " << i.getName(*m) << ", "
+            << std::endl;
     }
 }
 
@@ -77,7 +81,7 @@ int main() {
 
     morfeusz::Morfeusz *m = morfeusz::Morfeusz::createInstance();
     m->setCharset(morfeusz::UTF8);
-    m->setCaseHandling(morfeusz::IGNORE_CASE);
+    m->setCaseHandling(morfeusz::CONDITIONALLY_CASE_SENSITIVE);
     m->setAggl("permissive");
     m->setPraet("composite");
 
@@ -90,6 +94,8 @@ int main() {
         //std::cout << std::endl;
     }
     std::cout << std::endl;
+
+    //printResults(m, testText);
     printMorfSummary(m, testText);
 
 }
