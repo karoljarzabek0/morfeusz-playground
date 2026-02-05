@@ -1,6 +1,32 @@
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include "morfeusz2.h"
+
+
+void printMorfSummary(morfeusz::Morfeusz *m, std::string text) {
+    std::unordered_map<std::string, int> counts = {
+            {"valid_words", 0},
+            {"ignored_words", 0},
+            {"total_words", 0}
+        };
+
+    std::vector<morfeusz::MorphInterpretation> r;
+    m->analyse(text, r);
+
+    for (const auto &i : r) {
+        counts["total_words"] += 1;
+        if (i.isIgn()) {
+            counts["ignored_words"] += 1;
+        } else {
+            counts["valid_words"] += 1;
+        }
+    }
+
+    std::cout << "Valid: " << counts["valid_words"] 
+              << " | Ignored: " << counts["ignored_words"] << std::endl;
+
+}
 
 
 std::string readFile(std::string filePath) {
@@ -53,6 +79,7 @@ int main() {
     m->setCharset(morfeusz::UTF8);
     m->setCaseHandling(morfeusz::IGNORE_CASE);
     m->setAggl("permissive");
+    m->setPraet("composite");
 
     auto testText = readFile("test.txt");
 
@@ -62,5 +89,7 @@ int main() {
         std::cout << i << " ";
         //std::cout << std::endl;
     }
+    std::cout << std::endl;
+    printMorfSummary(m, testText);
 
 }
