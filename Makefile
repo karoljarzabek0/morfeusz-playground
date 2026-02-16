@@ -1,9 +1,12 @@
 CXX = g++
 
-CXXFLAGS = -Wall -Wextra -I include -L lib -l morfeusz2 -Wl,-rpath,'$$ORIGIN/lib'
+CXXFLAGS = -Wall -Wextra  
+CXXFLAGS += -I external
+CXXFLAGS += -L external/morfeusz/lib
+CXXFLAGS += -l morfeusz2
 
-main: main.cpp
-	$(CXX) main.cpp -o main $(CXXFLAGS)
+main: src/main.cpp
+	$(CXX) $< -o build/main $(CXXFLAGS)
 
 clean:
 	rm -f main
