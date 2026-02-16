@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/external/morfeusz/include"
+                "${workspaceFolder}/external/morfeusz/include**"
             ],
             "defines": [
                 "_DEBUG",

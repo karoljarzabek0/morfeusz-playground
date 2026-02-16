@@ -1,8 +1,13 @@
+//[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
-#include "morfeusz/include/morfeusz2.h"
+#include <map>
+#include <algorithm>
+#include <vector>
 
+#include "morfeusz2.h"
 
 void printMorfSummary(morfeusz::Morfeusz *m, std::string text) {
     std::unordered_map<std::string, int> counts = {
@@ -29,9 +34,9 @@ void printMorfSummary(morfeusz::Morfeusz *m, std::string text) {
 }
 
 void printDetailedMorfSummary(morfeusz::Morfeusz *m, std::string text) {
-    std::unordered_map<std::string, int> tagSum;
-    std::unordered_map<std::string, int> nameSum;
-    std::unordered_map<std::string, int> labelSum;
+    std::map<std::string, int> tagSum;
+    std::map<std::string, int> nameSum;
+    std::map<std::string, int> labelSum;
 
 
     std::vector<morfeusz::MorphInterpretation> r;
@@ -43,27 +48,25 @@ void printDetailedMorfSummary(morfeusz::Morfeusz *m, std::string text) {
         labelSum[i.getLabelsAsString(*m)]++;
         }
 
-    std::cout << "Tags:\n";
+    auto printSorted = [](const std::string& title, const std::map<std::string, int>& summaryMap) {
+        std::vector<std::pair<std::string, int>> sortedVec(summaryMap.begin(), summaryMap.end());
 
-    for (const auto &i : tagSum) {
-        std::cout << i.first << ": " << i.second << std::endl;;
-    }
+        std::sort(sortedVec.begin(), sortedVec.end(), [](const auto& a, const auto& b) {
+            return a.second > b.second;
+        });
 
-    std::cout << "Names:\n";
+        std::cout << title << ":\n";
+        for (const auto& pair : sortedVec) {
+            std::cout << pair.first << ": " << pair.second << "\n";
+        }
+        std::cout << "\n";
+    };
 
-    for (const auto &i : nameSum) {
-        std::cout << i.first << ": " << i.second << std::endl;;
-    }
-
-    std::cout << "Lables:\n";
-
-    for (const auto &i : labelSum) {
-        std::cout << i.first << ": " << i.second << std::endl;;
-    }
+    printSorted("Tags", tagSum);
+    printSorted("Names", nameSum);
+    printSorted("Labels", labelSum);
 
 }
-
-
 
 std::string readFile(std::string filePath) {
 
@@ -83,16 +86,32 @@ std::string readFile(std::string filePath) {
     return finalContent;
 }
 
-std::set<std::string> detectUnknownWords(morfeusz::Morfeusz *m, std::string text) {
-    std::set<std::string> unknownWords;
+std::unordered_map<std::string, int> detectUnknownWords(morfeusz::Morfeusz *m, std::string text) {
+    std::unordered_map<std::string, int> unknownWords;
 
     std::vector<morfeusz::MorphInterpretation> r;
     m->analyse(text, r);
     for (const auto &i : r) {
         if (i.isIgn()) {
-            unknownWords.insert(i.orth);
+            unknownWords[i.orth]++;
         }
     }
+
+    auto printSorted = [](const std::string& title, const std::unordered_map<std::string, int>& summaryMap) {
+        std::vector<std::pair<std::string, int>> sortedVec(summaryMap.begin(), summaryMap.end());
+        std::sort(sortedVec.begin(), sortedVec.end(), [](const auto& a, const auto& b) {
+            return a.second > b.second;
+        });
+        std::cout << title << ":\n";
+        for (const auto& pair : sortedVec) {
+            std::cout << pair.first << ": " << pair.second << "\n";
+        }
+        std::cout << "\n";
+    };
+
+    printSorted("Unknown words", unknownWords);
+
+
     return unknownWords;
 }
 
@@ -123,14 +142,8 @@ int main() {
 
     auto testText = readFile("test.txt");
 
-    auto results = detectUnknownWords(m, testText);
+    detectUnknownWords(m, testText);
     
-    for (const auto &i : results) {
-        std::cout << i << " ";
-        //std::cout << std::endl;
-    }
-    std::cout << std::endl;
-
     //printResults(m, testText);
     printMorfSummary(m, testText);
     printDetailedMorfSummary(m, testText);

@@ -1,7 +1,7 @@
 CXX = g++
 
 CXXFLAGS = -Wall -Wextra  
-CXXFLAGS += -I external
+CXXFLAGS += -I external/morfeusz/include
 CXXFLAGS += -L external/morfeusz/lib
 CXXFLAGS += -l morfeusz2
 
