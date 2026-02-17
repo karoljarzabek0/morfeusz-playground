@@ -4,13 +4,15 @@ CXXFLAGS = -Wall -Wextra
 CXXFLAGS += -I external/morfeusz/include
 CXXFLAGS += -L external/morfeusz/lib
 CXXFLAGS += -l morfeusz2
+MAINCXXFLAGS = -I src
 
-main: src/main.cpp
-	$(CXX) $< -o build/main $(CXXFLAGS)
+SRCS = $(wildcard src/*.cpp)
 
+main: $(SRCS)
+	$(CXX) $(SRCS) -o build/main $(CXXFLAGS) $(MAINCXXFLAGS)
 
-pdf: src/pdf.cpp
-	$(CXX) $< -o build/pdf $(CXXFLAGS)
+test_pdf: src/pdf.cpp
+	$(CXX) src/pdf.cpp -o build/test_pdf $(CXXFLAGS) -D DEBUG
 
 .PHONY: clean
 clean:

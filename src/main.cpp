@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "morfeusz2.h"
+#include "pdf.h"
 
 void printMorfSummary(morfeusz::Morfeusz *m, std::string text) {
     std::unordered_map<std::string, int> counts = {
@@ -140,13 +141,15 @@ int main() {
     m->setAggl("permissive");
     m->setPraet("composite");
 
+    Pdf test_pdf("data/test.pdf");
+
     auto testText = readFile("data/test.txt");
 
-    detectUnknownWords(m, testText);
+    detectUnknownWords(m, test_pdf.getText());
     
     //printResults(m, testText);
-    printMorfSummary(m, testText);
-    printDetailedMorfSummary(m, testText);
+    //printMorfSummary(m, testText);
+    //printDetailedMorfSummary(m, testText);
 
     delete m;
 
