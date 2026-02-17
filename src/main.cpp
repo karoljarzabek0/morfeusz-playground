@@ -140,7 +140,7 @@ int main() {
     m->setAggl("permissive");
     m->setPraet("composite");
 
-    auto testText = readFile("test.txt");
+    auto testText = readFile("data/test.txt");
 
     detectUnknownWords(m, testText);
     
