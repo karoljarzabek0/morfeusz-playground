@@ -8,5 +8,8 @@ CXXFLAGS += -l morfeusz2
 main: src/main.cpp
 	$(CXX) $< -o build/main $(CXXFLAGS)
 
+
+.PHONY: clean
 clean:
-	rm -f main
+	del .\build\main.exe
+
